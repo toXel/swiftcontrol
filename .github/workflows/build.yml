@@ -298,11 +298,16 @@ jobs:
           flutter pub global run intl_utils:generate;
 
       - name: 🚀 Shorebird Release Windows
+        if: false
         uses: shorebirdtech/shorebird-release@v1
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           platform: windows
 
+      - name: Build Windows Release
+        run: |
+          flutter build windows
+      
       - name: Zip directory (Windows)
         shell: pwsh
         run: |
