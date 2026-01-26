@@ -50,6 +50,8 @@ class Connection {
   final Map<BaseDevice, StreamSubscription<bool>> _connectionSubscriptions = {};
   final StreamController<BaseDevice> _connectionStreams = StreamController<BaseDevice>.broadcast();
   Stream<BaseDevice> get connectionStream => _connectionStreams.stream;
+  final StreamController<BluetoothDevice> _rssiConnectionStreams = StreamController<BluetoothDevice>.broadcast();
+  Stream<BluetoothDevice> get rssiConnectionStream => _rssiConnectionStreams.stream;
 
   final _lastScanResult = <BleDevice>[];
   final ValueNotifier<bool> hasDevices = ValueNotifier(false);
@@ -62,6 +64,10 @@ class Connection {
       lastLogEntries.add((date: DateTime.now(), entry: log.toString()));
       lastLogEntries = lastLogEntries.takeLast(kIsWeb ? 1000 : 60).toList();
     });
+
+    if (!kIsWeb && (Platform.isMacOS || Platform.isWindows)) {
+      core.mediaKeyHandler.initialize();
+    }
 
     UniversalBle.onAvailabilityChange = (available) {
       _actionStreams.add(BluetoothAvailabilityNotification(available == AvailabilityState.poweredOn));
@@ -83,7 +89,7 @@ class Connection {
       );
       if (existingDevice != null && existingDevice.rssi != result.rssi) {
         existingDevice.rssi = result.rssi;
-        _connectionStreams.add(existingDevice); // Notify UI of update
+        _rssiConnectionStreams.add(existingDevice); // Notify UI of update
       }
 
       if (_lastScanResult.none((e) => e.deviceId == result.deviceId && e.services.contentEquals(result.services))) {
@@ -312,7 +318,7 @@ class Connection {
             !state ? AppLocalizations.current.tryingToConnectAgain : null,
             NotificationDetails(
               android: AndroidNotificationDetails('Connection', 'Connection Status'),
-              iOS: DarwinNotificationDetails(presentAlert: true),
+              iOS: DarwinNotificationDetails(presentAlert: true, presentSound: false),
             ),
           );
           if (!device.isConnected) {

@@ -1,7 +1,7 @@
 {
   "accessibilityDescription": "BikeControl potrzebuje uprawnień dostępu, aby móc sterować aplikacjami treningowymi.",
   "accessibilityDisclaimer": "BikeControl będzie miał dostęp do Twojego ekranu wyłącznie w celu wykonania skonfigurowanych przez Ciebie gestów. Nie będzie miał dostępu do żadnych innych funkcji ułatwień dostępu ani danych osobowych.",
-  "accessibilityReasonControl": "• Aby umożliwić Ci sterowanie aplikacjami takimi jak MyWhoosh, IndieVelo i innymi za pomocą urządzeń Zwift",
+  "accessibilityReasonControl": "• Aby umożliwić Ci sterowanie aplikacjami takimi jak MyWhoosh, TrainingPeaks i innymi za pomocą urządzeń Zwift",
   "accessibilityReasonTouch": "• Aby symulować gesty dotykowe na ekranie w celu sterowania aplikacją treningową",
   "accessibilityReasonWindow": "• Aby wykryć, które okno aplikacji treningowej jest aktualnie aktywne",
   "accessibilityServiceExplanation": "Aby działać prawidłowo, BikeControl musi korzystać z interfejsu API AccessibilityService systemu Android.",
@@ -23,6 +23,7 @@
   "allowsRunningInBackground": "Umożliwia działanie BikeControl w tle",
   "alreadyBoughtTheApp": "Kupiłeś już aplikację? Nie musisz płacić za BikeControl. Z powodu problemów technicznych nie można ustalić, czy aplikacja została już zakupiona. \n\nWprowadź swój identyfikator zakupu w Sklepie Play (np. GPA.3356-1337-1338-1339), aby odblokować pełną wersję. Jeśli nie możesz jej znaleźć, skontaktuj się ze mną bezpośrednio.",
   "alreadyBoughtTheAppPreviously": "Już wcześniej kupiłeś aplikację?",
+  "androidSystemAction": "Akcja systemu Android",
   "appIdActions": "{appId} działania",
   "@appIdActions": {
     "placeholders": {
@@ -45,7 +46,7 @@
   "chooseBikeControlInConnectionScreen": "Wybierz BikeControl na ekranie połączenia.",
   "clickAButtonOnYourController": "Kliknij przycisk na kontrolerze, aby edytować jego akcję lub naciśnij ikonę edycji.",
   "clickV2EventInfo": "Twóje Click V2 może już nie wysyłać zdarzeń przycisków. Sprawdź, naciskając kilka przycisków, czy są one widoczne w BikeControl.",
-  "clickV2Instructions": "Aby Twoje Zwift Click V2 działały optymalnie, należy połączyć je z aplikacją Zwift przed każdym treningiem.\nJeśli tego nie zrobisz, Click V2 przestanie działać po minucie.\n\n1. Otwórz aplikację Zwift\n2. Zaloguj się (nie wymaga subskrypcji) i otwórz ekran połączeń z urządzeniami\n3. Połącz się z trenażerem, a następnie z Zwift Click V2\n4. Zamknij aplikację Zwift i ponownie połącz się z BikeControl",
+  "clickV2Instructions": "Aby Twoje Zwift Click V2 działały optymalnie, należy połączyć je z aplikacją Zwift przed każdym treningiem.\nJeśli tego nie zrobisz, Click V2 przestanie działać po minucie.\n\n1. Otwórz aplikację Zwift (nie Companion!)\n2. Zaloguj się (nie wymaga subskrypcji) i otwórz ekran połączeń z urządzeniami\n3. Połącz się z trenażerem, a następnie z Zwift Click V2\n4. Zamknij aplikację Zwift i ponownie połącz się z BikeControl",
   "close": "Zamknij",
   "commandsRemainingToday": "{commandsRemainingToday}/{dailyCommandLimit} dzisiejsze pozostałe polecenia",
   "configuration": "Konfiguracja",
@@ -139,6 +140,7 @@
   "duplicate": "Duplikuj",
   "enableAutoRotation": "Włącz funkcję automatycznego obracania na urządzeniu, aby mieć pewność, że aplikacja będzie działać prawidłowo.",
   "enableBluetooth": "Włącz Bluetooth",
+  "enableItInTheConnectionSettingsFirst": "Najpierw włącz tę opcję w ustawieniach połączenia.",
   "enableKeyboardAccessMessage": "Włącz dostęp do klawiatury dla BikeControl na poniższym ekranie. Jeśli nie widzisz BikeControl, dodaj go ręcznie.",
   "enableKeyboardMouseControl": "BikeControl będzie wysyłał akcje myszy lub klawiatury do kontrolera {appName} .",
   "@enableKeyboardMouseControl": {
@@ -148,7 +150,9 @@
       }
     }
   },
+  "enableLocalConnectionMethodFirst": "Najpierw włącz metodę połączenia lokalnego.",
   "enableMediaKeyDetection": "Włącz rozpoznawanie klawiszy multimedialnych",
+  "enableMywhooshLinkInTheConnectionSettingsFirst": "Najpierw włącz MyWhoosh Link w ustawieniach połączenia.",
   "enablePairingProcess": "Włącz proces parowania",
   "enablePermissions": "Nadaj uprawnienia",
   "enableSteeringWithPhone": "Włącz czujniki telefonów, aby umożliwić np. sterowanie",
@@ -394,6 +398,7 @@
   "simulateTouch": "Symuluj dotyk",
   "skip": "Pominąć",
   "stop": "Stop",
+  "supportedActions": "Obsługiwane działania",
   "targetOtherDevice": "Inne urządzenie",
   "targetThisDevice": "To urządzenie",
   "theFollowingPermissionsRequired": "Wymagane są następujące uprawnienia:",
@@ -408,7 +413,7 @@
   "tryingToConnectAgain": "Próba ponownego połączenia...",
   "unassignAction": "Anuluj przypisanie akcji",
   "unlockFullVersion": "Odblokuj pełną wersję",
-  "unlockingNotPossible": "Z uwagi na problemy techniczne odblokowanie nie jest obecnie możliwe, więc ciesz się nieograniczonym użytkowaniem!",
+  "unlockingNotPossible": "Odblokowanie nie jest obecnie możliwe, więc ciesz się nieograniczonym użytkowaniem!",
   "update": "Aktualizacja",
   "useCustomKeymapForButton": "Użyj niestandardowej mapy klawiszy, aby obsługiwać",
   "version": "Wersja {version}",

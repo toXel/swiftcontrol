@@ -1,10 +1,15 @@
 import 'dart:async';
 
 import 'package:bike_control/bluetooth/devices/base_device.dart';
+import 'package:bike_control/bluetooth/devices/zwift/zwift_device.dart';
 import 'package:bike_control/bluetooth/messages/notification.dart';
 import 'package:bike_control/gen/l10n.dart';
 import 'package:bike_control/utils/core.dart';
+import 'package:bike_control/utils/keymap/apps/supported_app.dart';
+import 'package:bike_control/utils/requirements/multi.dart';
 import 'package:bike_control/utils/requirements/platform.dart';
+import 'package:bike_control/widgets/apps/openbikecontrol_ble_tile.dart';
+import 'package:bike_control/widgets/apps/openbikecontrol_mdns_tile.dart';
 import 'package:bike_control/widgets/scan.dart';
 import 'package:bike_control/widgets/title.dart';
 import 'package:bike_control/widgets/ui/help_button.dart';
@@ -28,6 +33,7 @@ enum _OnboardingStep {
   permissions,
   connect,
   trainer,
+  openbikecontrol,
   finish,
 }
 
@@ -56,7 +62,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
             AppTitle(),
           ],
           trailing: [
-            Button.outline(
+            Button(
+              style: ButtonStyle.outline(size: ButtonSize.small),
               child: Text(AppLocalizations.of(context).skip),
               onPressed: () {
                 core.settings.setShowOnboarding(false);
@@ -80,7 +87,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           alignment: Alignment.topCenter,
           constraints: !_isMobile ? BoxConstraints(maxWidth: 500) : null,
           child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(vertical: !_isMobile ? 42 : 22.0, horizontal: 16),
+            padding: EdgeInsets.only(top: !_isMobile ? 42 : 22.0, bottom: !_isMobile ? 42 : 68.0, left: 16, right: 16),
             child: AnimatedSwitcher(
               duration: Duration(milliseconds: 600),
               child: switch (_currentStep) {
@@ -101,7 +108,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 _OnboardingStep.trainer => _TrainerOnboardingStep(
                   onComplete: () {
                     setState(() {
-                      _currentStep = _OnboardingStep.finish;
+                      if (core.settings.getTrainerApp()?.supportsOpenBikeProtocol.contains(
+                            OpenBikeProtocolSupport.network,
+                          ) ??
+                          false) {
+                        _currentStep = _OnboardingStep.openbikecontrol;
+                      } else {
+                        _currentStep = _OnboardingStep.finish;
+                      }
                     });
                   },
                 ),
@@ -113,12 +127,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     SizedBox(height: 30),
                     Icon(Icons.check_circle, size: 58, color: Colors.green),
                     ColoredTitle(text: AppLocalizations.of(context).setupComplete),
-                    Text(
-                      AppLocalizations.of(
-                        context,
-                      ).asAFinalStepYoullChooseHowToConnectTo(core.settings.getTrainerApp()?.name ?? 'your trainer'),
-                      textAlign: TextAlign.center,
-                    ).small.muted,
+                    if (core.obpMdnsEmulator.connectedApp.value == null)
+                      Text(
+                        AppLocalizations.of(
+                          context,
+                        ).asAFinalStepYoullChooseHowToConnectTo(core.settings.getTrainerApp()?.name ?? 'your trainer'),
+                        textAlign: TextAlign.center,
+                      ).small.muted,
 
                     SizedBox(height: 30),
                     PrimaryButton(
@@ -130,6 +145,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       child: Text(context.i18n.continueAction),
                     ),
                   ],
+                ),
+                _OnboardingStep.openbikecontrol => _OpenBikeControlConnectPage(
+                  onComplete: () {
+                    setState(() {
+                      _currentStep = _OnboardingStep.finish;
+                    });
+                  },
                 ),
               },
             ),
@@ -234,9 +256,7 @@ class _ConnectOnboardingStepState extends State<_ConnectOnboardingStep> {
 
           OutlineButton(
             onPressed: () {
-              launchUrlString(
-                'https://github.com/jonasbark/swiftcontrol/?tab=readme-ov-file#supported-devices',
-              );
+              launchUrlString('https://github.com/jonasbark/swiftcontrol/?tab=readme-ov-file#supported-devices');
             },
             leading: Icon(Icons.gamepad_outlined),
             child: Text(context.i18n.showSupportedControllers),
@@ -259,7 +279,7 @@ class _ConnectOnboardingStepState extends State<_ConnectOnboardingStep> {
             ),
           ),
         ] else ...[
-          if (core.connection.controllerDevices.any((d) => d.isConnected))
+          if (core.connection.controllerDevices.any((d) => d.isConnected && d is ZwiftDevice))
             RepeatedAnimationBuilder<double>(
               duration: Duration(seconds: 1),
               start: 0.5,
@@ -279,6 +299,14 @@ class _ConnectOnboardingStepState extends State<_ConnectOnboardingStep> {
           ...core.connection.controllerDevices.map(
             (device) => device.showInformation(context),
           ),
+          if (core.connection.controllerDevices.any((d) => d.isConnected))
+            PrimaryButton(
+              leading: Icon(Icons.check),
+              onPressed: () {
+                widget.onComplete();
+              },
+              child: Text(context.i18n.continueAction),
+            ),
           SizedBox(),
         ],
       ],
@@ -317,6 +345,52 @@ class _TrainerOnboardingStepState extends State<_TrainerOnboardingStep> {
             },
             child: Text(context.i18n.continueAction),
           ),
+      ],
+    );
+  }
+}
+
+class _OpenBikeControlConnectPage extends StatefulWidget {
+  final VoidCallback onComplete;
+  const _OpenBikeControlConnectPage({super.key, required this.onComplete});
+
+  @override
+  State<_OpenBikeControlConnectPage> createState() => _OpenBikeControlConnectPageState();
+}
+
+class _OpenBikeControlConnectPageState extends State<_OpenBikeControlConnectPage> {
+  @override
+  void initState() {
+    super.initState();
+    if (!core.obpMdnsEmulator.isStarted.value) {
+      if (!core.logic.isObpMdnsEnabled) {
+        core.settings.setObpMdnsEnabled(true);
+      }
+      core.logic.startEnabledConnectionMethod();
+    }
+    core.obpMdnsEmulator.connectedApp.addListener(() {
+      if (core.obpMdnsEmulator.connectedApp.value != null) {
+        widget.onComplete();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 22,
+      children: [
+        Text(
+          AppLocalizations.of(context).openBikeControlAnnouncement(core.settings.getTrainerApp()!.name),
+        ).small,
+        OpenBikeControlMdnsTile(),
+
+        if (core.settings.getLastTarget() == Target.otherDevice &&
+            core.settings.getTrainerApp()?.supportsOpenBikeProtocol.contains(OpenBikeProtocolSupport.ble) == true) ...[
+          SizedBox(height: 20),
+          Text('If you have issues with your network connection, you can also connect via Bluetooth.').small.muted,
+          OpenBikeControlBluetoothTile(),
+        ],
       ],
     );
   }

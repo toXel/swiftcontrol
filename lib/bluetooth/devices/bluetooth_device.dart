@@ -18,6 +18,7 @@ import 'package:bike_control/main.dart';
 import 'package:bike_control/pages/device.dart';
 import 'package:bike_control/utils/core.dart';
 import 'package:bike_control/utils/i18n_extension.dart';
+import 'package:bike_control/utils/keymap/buttons.dart';
 import 'package:bike_control/widgets/ui/beta_pill.dart';
 import 'package:bike_control/widgets/ui/device_info.dart';
 import 'package:bike_control/widgets/ui/loading_widget.dart';
@@ -31,12 +32,23 @@ import 'package:universal_ble/universal_ble.dart';
 import 'cycplus/cycplus_bc2.dart';
 import 'elite/elite_square.dart';
 import 'elite/elite_sterzo.dart';
+import 'thinkrider/thinkrider_vs200.dart';
 
 abstract class BluetoothDevice extends BaseDevice {
   final BleDevice scanResult;
 
-  BluetoothDevice(this.scanResult, {required super.availableButtons, super.isBeta = false})
-    : super(scanResult.name ?? 'Unknown Device') {
+  BluetoothDevice(
+    this.scanResult, {
+    required List<ControllerButton> availableButtons,
+    bool allowMultiple = false,
+    bool isBeta = false,
+  }) : super(
+         scanResult.name,
+         availableButtons: allowMultiple
+             ? availableButtons.map((b) => b.copyWith(sourceDeviceId: scanResult.deviceId)).toList()
+             : availableButtons,
+         isBeta: isBeta,
+       ) {
     rssi = scanResult.rssi;
   }
 
@@ -55,15 +67,24 @@ abstract class BluetoothDevice extends BaseDevice {
     ShimanoDi2Constants.SERVICE_UUID,
     ShimanoDi2Constants.SERVICE_UUID_ALTERNATIVE,
     OpenBikeControlConstants.SERVICE_UUID,
+    ThinkRiderVs200Constants.SERVICE_UUID,
   ];
 
+  static final List<String> _ignoredNames = ['ASSIOMA', 'QUARQ', 'POWERCRANK'];
+
   static BluetoothDevice? fromScanResult(BleDevice scanResult) {
+    // skip devices with ignored names
+    if (scanResult.name != null &&
+        _ignoredNames.any((ignoredName) => scanResult.name!.toUpperCase().startsWith(ignoredName))) {
+      return null;
+    }
+
     // Use the name first as the "System Devices" and Web (android sometimes Windows) don't have manufacturer data
     BluetoothDevice? device;
     if (kIsWeb) {
       device = switch (scanResult.name) {
         'Zwift Ride' => ZwiftRide(scanResult),
-        'Zwift Play' => ZwiftPlay(scanResult),
+        'Zwift Play' => ZwiftPlay(scanResult, deviceType: ZwiftDeviceType.playLeft),
         'Zwift Click' => ZwiftClickV2(scanResult),
         'SQUARE' => EliteSquare(scanResult),
         'OpenBike' => OpenBikeControlDevice(scanResult),
@@ -74,6 +95,7 @@ abstract class BluetoothDevice extends BaseDevice {
         _ when scanResult.name!.toUpperCase().startsWith('KICKR BIKE PRO') => WahooKickrBikePro(scanResult),
         _ when scanResult.name!.toUpperCase().startsWith('CYCPLUS') && scanResult.name!.toUpperCase().contains('BC2') =>
           CycplusBc2(scanResult),
+        _ when scanResult.name!.toUpperCase().startsWith('THINK VS') => ThinkRiderVs200(scanResult),
         _ when scanResult.name!.toUpperCase().startsWith('RDR') => ShimanoDi2(scanResult),
         _ when scanResult.name!.toUpperCase().startsWith('SRAM') => SramAxs(scanResult),
         _ => null,
@@ -83,7 +105,7 @@ abstract class BluetoothDevice extends BaseDevice {
         null => null,
         //'Zwift Ride' => ZwiftRide(scanResult), special case for Zwift Ride: we must only connect to the left controller
         // https://www.makinolo.com/blog/2024/07/26/zwift-ride-protocol/
-        'Zwift Play' => ZwiftPlay(scanResult),
+        //'Zwift Play' => ZwiftPlay(scanResult),
         //'Zwift Click' => ZwiftClick(scanResult), special case for Zwift Click v2: we must only connect to the left controller
         _ when scanResult.name!.toUpperCase().startsWith('HEADWIND') => WahooKickrHeadwind(scanResult),
         _ when scanResult.name!.toUpperCase().startsWith('SQUARE') => EliteSquare(scanResult),
@@ -92,7 +114,8 @@ abstract class BluetoothDevice extends BaseDevice {
         _ when scanResult.name!.toUpperCase().startsWith('KICKR BIKE PRO') => WahooKickrBikePro(scanResult),
         _ when scanResult.name!.toUpperCase().startsWith('CYCPLUS') && scanResult.name!.toUpperCase().contains('BC2') =>
           CycplusBc2(scanResult),
-        _ when scanResult.services.contains(CycplusBc2Constants.SERVICE_UUID.toLowerCase()) => CycplusBc2(scanResult),
+        _ when scanResult.name!.toUpperCase().startsWith('THINK VS') => ThinkRiderVs200(scanResult),
+        //_ when scanResult.services.contains(CycplusBc2Constants.SERVICE_UUID.toLowerCase()) => CycplusBc2(scanResult),
         _ when scanResult.services.contains(ShimanoDi2Constants.SERVICE_UUID.toLowerCase()) => ShimanoDi2(scanResult),
         _ when scanResult.services.contains(ShimanoDi2Constants.SERVICE_UUID_ALTERNATIVE.toLowerCase()) => ShimanoDi2(
           scanResult,
@@ -104,6 +127,9 @@ abstract class BluetoothDevice extends BaseDevice {
           OpenBikeControlDevice(scanResult),
         _ when scanResult.services.contains(WahooKickrHeadwindConstants.SERVICE_UUID.toLowerCase()) =>
           WahooKickrHeadwind(scanResult),
+        _ when scanResult.services.contains(ThinkRiderVs200Constants.SERVICE_UUID.toLowerCase()) => ThinkRiderVs200(
+          scanResult,
+        ),
         // otherwise the service UUIDs will be used
         _ => null,
       };
@@ -126,8 +152,8 @@ abstract class BluetoothDevice extends BaseDevice {
         final type = ZwiftDeviceType.fromManufacturerData(data.first);
         device = switch (type) {
           ZwiftDeviceType.click => ZwiftClick(scanResult),
-          ZwiftDeviceType.playRight => ZwiftPlay(scanResult),
-          ZwiftDeviceType.playLeft => ZwiftPlay(scanResult),
+          ZwiftDeviceType.playRight => ZwiftPlay(scanResult, deviceType: type!),
+          ZwiftDeviceType.playLeft => ZwiftPlay(scanResult, deviceType: type!),
           ZwiftDeviceType.rideLeft => ZwiftRide(scanResult),
           //DeviceType.rideRight => ZwiftRide(scanResult), // see comment above
           ZwiftDeviceType.clickV2Left => ZwiftClickV2(scanResult),
@@ -137,16 +163,17 @@ abstract class BluetoothDevice extends BaseDevice {
       }
     }
 
-    if (scanResult.name == 'Zwift Ride' && device == null) {
+    if (scanResult.name == 'Zwift Ride' &&
+        device == null &&
+        core.connection.controllerDevices.none((d) => d is ZwiftRide)) {
       // Fallback for Zwift Ride if nothing else matched => old firmware
       if (navigatorKey.currentContext?.mounted ?? false) {
         buildToast(
           navigatorKey.currentContext!,
-          title: 'Please update your Zwift Ride firmware.',
+          title: 'You may need to update your Zwift Ride firmware.',
           duration: Duration(seconds: 6),
         );
       }
-      device = ZwiftRide(scanResult);
     }
     return device;
   }
@@ -318,15 +345,22 @@ abstract class BluetoothDevice extends BaseDevice {
               ),
 
             if (rssi != null)
-              DeviceInfo(
-                title: context.i18n.signal,
-                icon: switch (rssi!) {
-                  >= -50 => Icons.signal_cellular_4_bar,
-                  >= -60 => Icons.signal_cellular_alt_2_bar,
-                  >= -70 => Icons.signal_cellular_alt_1_bar,
-                  _ => Icons.signal_cellular_alt,
+              StreamBuilder(
+                stream: core.connection.rssiConnectionStream
+                    .where((device) => device == this)
+                    .map((event) => event.rssi),
+                builder: (context, rssiValue) {
+                  return DeviceInfo(
+                    title: context.i18n.signal,
+                    icon: switch (rssiValue.data ?? rssi!) {
+                      >= -50 => Icons.signal_cellular_4_bar,
+                      >= -60 => Icons.signal_cellular_alt_2_bar,
+                      >= -70 => Icons.signal_cellular_alt_1_bar,
+                      _ => Icons.signal_cellular_alt,
+                    },
+                    value: '$rssi dBm',
+                  );
                 },
-                value: '$rssi dBm',
               ),
           ],
         ),

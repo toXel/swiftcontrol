@@ -1,7 +1,7 @@
 {
   "accessibilityDescription": "BikeControl needs accessibility permission to control your training apps.",
   "accessibilityDisclaimer": "BikeControl will only access your screen to perform the gestures you configure. No other accessibility features or personal information will be accessed.",
-  "accessibilityReasonControl": "• To enable you to control apps like MyWhoosh, IndieVelo, and others using your Zwift devices",
+  "accessibilityReasonControl": "• To enable you to control apps like MyWhoosh, TrainingPeaks, and others using your Zwift devices",
   "accessibilityReasonTouch": "• To simulate touch gestures on your screen for controlling trainer apps",
   "accessibilityReasonWindow": "• To detect which training app window is currently active",
   "accessibilityServiceExplanation": "BikeControl needs to use Android's AccessibilityService API to function properly.",
@@ -23,6 +23,7 @@
   "allowsRunningInBackground": "Allows BikeControl to keep running in background",
   "alreadyBoughtTheApp": "Already bought the app? You don't need to pay for BikeControl, again. Due to technical difficulties, it's not possible to determine if the app was bought already.\n\nEnter your Play Store purchase ID (e.g. GPA.3356-1337-1338-1339) to unlock the full version. If you can't find it, please get in touch with me directly.",
   "alreadyBoughtTheAppPreviously": "Already bought the app previously?",
+  "androidSystemAction": "Android System Action",
   "appIdActions": "{appId} actions",
   "@appIdActions": {
     "placeholders": {
@@ -45,7 +46,7 @@
   "chooseBikeControlInConnectionScreen": "Choose BikeControl in the connection screen.",
   "clickAButtonOnYourController": "Click a button on your controller to edit its action or tap the edit icon.",
   "clickV2EventInfo": "Your Click V2 may no longer send button events. Please check by tapping a few buttons and see if they are visible in BikeControl.",
-  "clickV2Instructions": "To make your Zwift Click V2 work best, you should connect it in the Zwift app before each training session.\nIf you don't do that, the Click V2 will stop working after a minute.\n\n1. Open Zwift app\n2. Log in (subscription not required) and open the device connection screen\n3. Connect your Trainer, then connect the Zwift Click V2\n4. Close the Zwift app again and connect again in BikeControl",
+  "clickV2Instructions": "To make your Zwift Click V2 work best, you should connect it in the Zwift app before each training session.\nIf you don't do that, the Click V2 will stop working after a minute.\n\n1. Open Zwift app (not the Companion!)\n2. Log in (subscription not required) and open the device connection screen\n3. Connect your Trainer, then connect the Zwift Click V2\n4. Close the Zwift app again and connect again in BikeControl",
   "close": "Close",
   "commandsRemainingToday": "{commandsRemainingToday}/{dailyCommandLimit} commands remaining today",
   "configuration": "Configuration",
@@ -139,6 +140,7 @@
   "duplicate": "Duplicate",
   "enableAutoRotation": "Enable auto-rotation on your device to make sure the app works correctly.",
   "enableBluetooth": "Enable Bluetooth",
+  "enableItInTheConnectionSettingsFirst": "Enable it in the connection settings first.",
   "enableKeyboardAccessMessage": "Enable keyboard access in the following screen for BikeControl. If you don't see BikeControl, please add it manually.",
   "enableKeyboardMouseControl": "BikeControl will send mouse or keyboard actions to control {appName}.",
   "@enableKeyboardMouseControl": {
@@ -148,7 +150,9 @@
       }
     }
   },
+  "enableLocalConnectionMethodFirst": "Enable Local Connection method, first.",
   "enableMediaKeyDetection": "Enable Media Key Detection",
+  "enableMywhooshLinkInTheConnectionSettingsFirst": "Enable MyWhoosh Link in the connection settings first.",
   "enablePairingProcess": "Enable Pairing Process",
   "enablePermissions": "Enable Permissions",
   "enableSteeringWithPhone": "Enable Phones' sensors to enable e.g. steering",
@@ -394,6 +398,7 @@
   "simulateTouch": "Simulate Touch",
   "skip": "Skip",
   "stop": "Stop",
+  "supportedActions": "Supported Actions",
   "targetOtherDevice": "Other Device",
   "targetThisDevice": "This Device",
   "theFollowingPermissionsRequired": "The following permissions are required:",
@@ -408,7 +413,7 @@
   "tryingToConnectAgain": "Trying to connect again...",
   "unassignAction": "Unassign action",
   "unlockFullVersion": "Unlock Full Version",
-  "unlockingNotPossible": "Due to technical issues unlocking is currently not possible, so enjoy unlimited usage for the time being!",
+  "unlockingNotPossible": "Unlocking is currently not yet possible, so enjoy unlimited usage for the time being!",
   "update": "Update",
   "useCustomKeymapForButton": "Use a custom keymap to support the",
   "version": "Version {version}",

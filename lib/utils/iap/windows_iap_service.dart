@@ -4,6 +4,7 @@ import 'package:bike_control/bluetooth/messages/notification.dart';
 import 'package:bike_control/main.dart';
 import 'package:bike_control/utils/core.dart';
 import 'package:bike_control/utils/iap/iap_manager.dart';
+import 'package:bike_control/utils/windows_store_environment.dart';
 import 'package:bike_control/widgets/ui/toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -70,8 +71,11 @@ class WindowsIAPService {
         trialDaysRemaining = 0;
       }
     } else {
+      final isStorePackaged = await WindowsStoreEnvironment.isPackaged();
+      trial.isActive = isStorePackaged;
       trialDaysRemaining = 0;
     }
+
     if (trial.isActive && !trial.isTrial && trialDaysRemaining <= 0) {
       IAPManager.instance.isPurchased.value = true;
       await _prefs.write(key: _purchaseStatusKey, value: "true");
@@ -100,7 +104,7 @@ class WindowsIAPService {
   }
 
   /// Check if the trial period has started
-  bool get hasTrialStarted => trialDaysRemaining > 0;
+  bool get hasTrialStarted => trialDaysRemaining >= 0;
 
   /// Get the number of days remaining in the trial
   int trialDaysRemaining = 0;

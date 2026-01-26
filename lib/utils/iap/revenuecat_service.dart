@@ -14,6 +14,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:version/version.dart';
 
 /// RevenueCat-based IAP service for iOS, macOS, and Android
 class RevenueCatService {
@@ -23,6 +24,7 @@ class RevenueCatService {
   static const String _purchaseStatusKey = 'iap_purchase_status';
   static const String _dailyCommandCountKey = 'iap_daily_command_count';
   static const String _lastCommandDateKey = 'iap_last_command_date';
+  static const String _syncedPurchasesKey = 'iap_synced_purchases';
 
   // RevenueCat entitlement identifier
   static const String fullVersionEntitlement = 'Full Version';
@@ -139,6 +141,11 @@ class RevenueCatService {
   /// Check if the user has an active entitlement
   Future<void> _checkExistingPurchase() async {
     try {
+      final storedStatus = await _prefs.read(key: _syncedPurchasesKey);
+      if (storedStatus != "true") {
+        await _prefs.write(key: _syncedPurchasesKey, value: "true");
+        await Purchases.syncPurchases();
+      }
       // Check current entitlement status from RevenueCat
       final customerInfo = await Purchases.getCustomerInfo();
       await _handleCustomerInfoUpdate(customerInfo);
@@ -168,8 +175,14 @@ class RevenueCatService {
       } else {
         final purchasedVersion = customerInfo.originalApplicationVersion;
         core.connection.signalNotification(LogNotification('Apple receipt validated for version: $purchasedVersion'));
-        final purchasedVersionAsInt = int.tryParse(purchasedVersion.toString()) ?? 1337;
-        isPurchasedNotifier.value = purchasedVersionAsInt < (Platform.isMacOS ? 61 : 58);
+        if (purchasedVersion != null && purchasedVersion.contains(".")) {
+          final parsedVersion = Version.parse(purchasedVersion);
+          isPurchasedNotifier.value = parsedVersion < Version(4, 2, 0) || parsedVersion >= Version(4, 4, 0);
+        } else {
+          final purchasedVersionAsInt = int.tryParse(purchasedVersion.toString()) ?? 1337;
+          isPurchasedNotifier.value =
+              purchasedVersionAsInt < (Platform.isMacOS ? 61 : 58) || purchasedVersionAsInt >= 77;
+        }
       }
     } else {
       isPurchasedNotifier.value = hasEntitlement;
@@ -229,7 +242,7 @@ class RevenueCatService {
     // Direct the user to the paywall for a better experience
     if (Platform.isAndroid && !_isAndroidWorking) {
       buildToast(
-        context,
+        navigatorKey.currentContext!,
         title: AppLocalizations.of(context).unlockingNotPossible,
         duration: Duration(seconds: 5),
       );

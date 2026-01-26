@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:bike_control/bluetooth/devices/hid/hid_device.dart';
 import 'package:bike_control/bluetooth/devices/openbikecontrol/obc_ble_emulator.dart';
 import 'package:bike_control/bluetooth/devices/openbikecontrol/obc_mdns_emulator.dart';
 import 'package:bike_control/bluetooth/devices/openbikecontrol/protocol_parser.dart';
@@ -15,22 +14,21 @@ import 'package:bike_control/utils/actions/android.dart';
 import 'package:bike_control/utils/actions/base_actions.dart';
 import 'package:bike_control/utils/actions/remote.dart';
 import 'package:bike_control/utils/keymap/apps/my_whoosh.dart';
-import 'package:bike_control/utils/keymap/buttons.dart';
+import 'package:bike_control/utils/keymap/apps/supported_app.dart';
 import 'package:bike_control/utils/requirements/android.dart';
 import 'package:bike_control/utils/settings/settings.dart';
 import 'package:dartx/dartx.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:media_key_detector/media_key_detector.dart';
 import 'package:universal_ble/universal_ble.dart';
 
 import '../bluetooth/connection.dart';
 import '../bluetooth/devices/mywhoosh/link.dart';
 import 'keymap/apps/rouvy.dart';
+import 'media_key_handler.dart';
 import 'requirements/multi.dart';
 import 'requirements/platform.dart';
-import 'smtc_stub.dart' if (dart.library.io) 'package:smtc_windows/smtc_windows.dart';
 
 final core = Core();
 
@@ -67,7 +65,7 @@ class Permissions {
     } else if (Platform.isMacOS) {
       list = [
         BluetoothTurnedOn(),
-        NotificationRequirement(),
+        if (core.settings.getShowOnboarding()) NotificationRequirement(),
       ];
     } else if (Platform.isIOS) {
       list = [
@@ -170,11 +168,11 @@ class CoreLogic {
   }
 
   bool get showObpMdnsEmulator {
-    return core.settings.getTrainerApp()?.supportsOpenBikeProtocol == true;
+    return core.settings.getTrainerApp()?.supportsOpenBikeProtocol.contains(OpenBikeProtocolSupport.network) == true;
   }
 
   bool get showObpBluetoothEmulator {
-    return (core.settings.getTrainerApp()?.supportsOpenBikeProtocol == true) &&
+    return (core.settings.getTrainerApp()?.supportsOpenBikeProtocol.contains(OpenBikeProtocolSupport.ble) == true) &&
         core.settings.getLastTarget() != Target.thisDevice;
   }
 
@@ -209,11 +207,10 @@ class CoreLogic {
 
   bool get ignoreWarnings =>
       core.settings.getTrainerApp()?.supportsZwiftEmulation == true ||
-      core.settings.getTrainerApp()?.supportsOpenBikeProtocol == true;
+      core.settings.getTrainerApp()?.supportsOpenBikeProtocol.isNotEmpty == true;
 
   bool get showLocalRemoteOptions =>
-      core.actionHandler.supportedModes.isNotEmpty &&
-      ((showLocalControl && core.settings.getLocalEnabled()) || (isRemoteControlEnabled));
+      core.actionHandler.supportedModes.isNotEmpty && ((showLocalControl) || (isRemoteControlEnabled));
 
   bool get hasNoConnectionMethod =>
       !screenshotMode &&
@@ -261,9 +258,7 @@ class CoreLogic {
   Future<bool> isTrainerConnected() async {
     if (screenshotMode) {
       return true;
-    } else if (showLocalControl &&
-        core.settings.getLocalEnabled() &&
-        core.settings.getTrainerApp()?.supportsOpenBikeProtocol == false) {
+    } else if (showLocalControl && core.settings.getLocalEnabled()) {
       if (canRunAndroidService) {
         return isAndroidServiceRunning();
       } else {
@@ -334,91 +329,5 @@ class CoreLogic {
         );
       });
     }
-  }
-}
-
-class MediaKeyHandler {
-  final ValueNotifier<bool> isMediaKeyDetectionEnabled = ValueNotifier(false);
-
-  bool _smtcInitialized = false;
-  SMTCWindows? _smtc;
-
-  void initialize() {
-    isMediaKeyDetectionEnabled.addListener(() async {
-      if (!isMediaKeyDetectionEnabled.value) {
-        if (Platform.isWindows) {
-          _smtc?.disableSmtc();
-        } else {
-          mediaKeyDetector.setIsPlaying(isPlaying: false);
-          mediaKeyDetector.removeListener(_onMediaKeyDetectedListener);
-        }
-      } else {
-        if (Platform.isWindows) {
-          if (!_smtcInitialized) {
-            _smtcInitialized = true;
-            await SMTCWindows.initialize();
-          }
-
-          _smtc = SMTCWindows(
-            metadata: const MusicMetadata(
-              title: 'BikeControl Media Key Handler',
-              album: 'BikeControl',
-              albumArtist: 'BikeControl',
-              artist: 'BikeControl',
-            ),
-            // Timeline info for the OS media player
-            timeline: const PlaybackTimeline(
-              startTimeMs: 0,
-              endTimeMs: 1000,
-              positionMs: 0,
-              minSeekTimeMs: 0,
-              maxSeekTimeMs: 1000,
-            ),
-            config: const SMTCConfig(
-              fastForwardEnabled: true,
-              nextEnabled: true,
-              pauseEnabled: true,
-              playEnabled: true,
-              rewindEnabled: true,
-              prevEnabled: true,
-              stopEnabled: true,
-            ),
-          );
-          _smtc!.buttonPressStream.listen(_onMediaKeyPressedListener);
-        } else {
-          mediaKeyDetector.addListener(_onMediaKeyDetectedListener);
-          mediaKeyDetector.setIsPlaying(isPlaying: true);
-        }
-      }
-    });
-  }
-
-  void _onMediaKeyDetectedListener(MediaKey mediaKey) {
-    _onMediaKeyPressedListener(switch (mediaKey) {
-      MediaKey.playPause => PressedButton.play,
-      MediaKey.rewind => PressedButton.rewind,
-      MediaKey.fastForward => PressedButton.fastForward,
-      MediaKey.volumeUp => PressedButton.channelUp,
-      MediaKey.volumeDown => PressedButton.channelDown,
-    });
-  }
-
-  Future<void> _onMediaKeyPressedListener(PressedButton mediaKey) async {
-    final hidDevice = HidDevice('HID Device');
-    final keyPressed = mediaKey.name;
-
-    final button = hidDevice.getOrAddButton(
-      keyPressed,
-      () => ControllerButton(keyPressed),
-    );
-
-    var availableDevice = core.connection.controllerDevices.firstOrNullWhere(
-      (e) => e.toString() == hidDevice.toString(),
-    );
-    if (availableDevice == null) {
-      core.connection.addDevices([hidDevice]);
-      availableDevice = hidDevice;
-    }
-    availableDevice.handleButtonsClickedWithoutLongPressSupport([button]);
   }
 }

@@ -1,9 +1,32 @@
-### 4.3.0 (unreleased)
+### 4.5.0 (22-01-2026)
+
+**Features**:
+- Android: simulate additional actions for local connection method (Left, Down, Right, Up, Select, Back, Home, Recent Apps)
+  - control your phone with your controller
+  - control UI within the trainer app (if supported)
+- BikeControl now supports individual mapping when you use more than one Cycplus BC2 and ThinkRider VS200 controller
+- Windows & macOS: allow configuration of volume keys on Bluetooth HID devices
+
+### 4.4.0 (16-01-2026)
+
+**Features**:
+- Support for Thinkrider VS200
+
+**Fixes**:
+- Android: Local connection method allows passing keyboard events to the trainer app
+- macOS: Compatibility with macOS Tahoe
+- Windows: send keyboard events to the correct window when using multiple monitors or when another app is focused
+- Windows: fix media key detection
+
+### 4.3.0 (07-01-2026)
 
 **Features**:
 - Onboarding for new users
-- media key support for Windows and macOS
+- support controlling music & volume for Windows, macOS and Android
 - App is now available in Italian (thanks to Connect_Thanks2613)
+
+**Fixes**:
+- Vibration setting now available for Zwift Ride devices
 
 ### 4.2.0 (20-12-2025)
 

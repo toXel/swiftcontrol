@@ -1,7 +1,7 @@
 {
   "accessibilityDescription": "BikeControl necessita dell'autorizzazione di accessibilità per controllare le tue app di allenamento.",
   "accessibilityDisclaimer": "BikeControl accederà al tuo schermo solo per eseguire i gesti da te configurati. Non accederà ad altre funzioni di accessibilità o a informazioni personali.",
-  "accessibilityReasonControl": "• Per consentirti di controllare app come MyWhoosh, IndieVelo e altre utilizzando i tuoi dispositivi Zwift",
+  "accessibilityReasonControl": "• Per consentirti di controllare app come MyWhoosh, TrainingPeaks e altre utilizzando i tuoi dispositivi Zwift",
   "accessibilityReasonTouch": "• Per simulare i gesti touch sullo schermo per controllare le app di allenamento",
   "accessibilityReasonWindow": "• Per rilevare quale finestra dell'app di allenamento è attualmente attiva",
   "accessibilityServiceExplanation": "Per funzionare correttamente, BikeControl deve utilizzare l'API AccessibilityService di Android.",
@@ -14,7 +14,7 @@
   "action": "Azione",
   "adjustControllerButtons": "Regola i pulsanti del controller",
   "afterDate": "Dopo il {date}",
-  "allow": "Consentire",
+  "allow": "Consenti",
   "allowAccessibilityService": "Consenti servizio di accessibilità",
   "allowBluetoothConnections": "Consenti connessioni Bluetooth",
   "allowBluetoothScan": "Consenti scansione Bluetooth",
@@ -23,6 +23,7 @@
   "allowsRunningInBackground": "Consente a BikeControl di continuare a funzionare in background",
   "alreadyBoughtTheApp": "Hai già acquistato l'app? Non devi più pagare per BikeControl. A causa di problemi tecnici, non è possibile determinare se l'app è già stata acquistata.\n\nInserisci il tuo ID di acquisto sul Play Store (ad esempio GPA.3356-1337-1338-1339) per sbloccare la versione completa. Se non riesci a trovarlo, contattami direttamente.",
   "alreadyBoughtTheAppPreviously": "Hai già acquistato l'app in precedenza?",
+  "androidSystemAction": "Azione del sistema Android",
   "appIdActions": "{appId} azioni",
   "@appIdActions": {
     "placeholders": {
@@ -45,7 +46,7 @@
   "chooseBikeControlInConnectionScreen": "Selezionare BikeControl nella schermata di connessione.",
   "clickAButtonOnYourController": "Fai clic su un pulsante del controller per modificarne l'azione oppure tocca l'icona di modifica.",
   "clickV2EventInfo": "Il tuo Click V2 potrebbe non inviare più eventi tramite i pulsanti. Verifica toccando alcuni pulsanti e verifica se sono visibili in BikeControl.",
-  "clickV2Instructions": "Per far funzionare al meglio il tuo Zwift Click V2, dovresti collegarlo all'app Zwift prima di ogni sessione di allenamento. In caso contrario, il Click V2 smetterà di funzionare dopo un minuto. \n1. Apri l'app Zwift \n2. Accedi (non richiesto un abbonamento attivo) e apri la schermata di connessione del dispositivo \n3. Collega il tuo trainer, quindi collega lo Zwift Click V2, verifica che i comandi del controller funzionino \n4. Chiudi nuovamente l'app Zwift e riconnettiti a BikeControl",
+  "clickV2Instructions": "Per far funzionare al meglio il tuo Zwift Click V2, dovresti collegarlo all'app Zwift prima di ogni sessione di allenamento. In caso contrario, il Click V2 smetterà di funzionare dopo un minuto. \n\n1. Apri l'app Zwift (non il Companion!)\n2. Accedi (non richiesto un abbonamento attivo) e apri la schermata di connessione del dispositivo \n3. Collega il tuo trainer, quindi collega lo Zwift Click V2, verifica che i comandi del controller funzionino \n4. Chiudi nuovamente l'app Zwift e riconnettiti a BikeControl",
   "close": "Chiudi",
   "commandsRemainingToday": "{commandsRemainingToday}/{dailyCommandLimit} comandi rimanenti oggi",
   "configuration": "Configurazione",
@@ -139,6 +140,7 @@
   "duplicate": "Duplica",
   "enableAutoRotation": "Abilita la rotazione automatica sul tuo dispositivo per assicurarti che l'app funzioni correttamente.",
   "enableBluetooth": "Abilita Bluetooth",
+  "enableItInTheConnectionSettingsFirst": "Per prima cosa abilitalo nelle impostazioni di connessione.",
   "enableKeyboardAccessMessage": "Abilita l'accesso tramite tastiera nella schermata seguente per BikeControl. Se BikeControl non è presente, aggiungilo manualmente.",
   "enableKeyboardMouseControl": "BikeControl invierà azioni del mouse o della tastiera per controllare {appName} .",
   "@enableKeyboardMouseControl": {
@@ -148,7 +150,9 @@
       }
     }
   },
+  "enableLocalConnectionMethodFirst": "Abilitare prima il metodo di connessione locale.",
   "enableMediaKeyDetection": "Abilita rilevamento tasti multimediali",
+  "enableMywhooshLinkInTheConnectionSettingsFirst": "Per prima cosa, abilita MyWhoosh Link nelle impostazioni di connessione.",
   "enablePairingProcess": "Abilita processo di associazione",
   "enablePermissions": "Abilita autorizzazioni",
   "enableSteeringWithPhone": "Abilita i sensori dei telefoni per abilitare ad esempio lo sterzo",
@@ -394,6 +398,7 @@
   "simulateTouch": "Simula il tocco",
   "skip": "Saltare",
   "stop": "Stop",
+  "supportedActions": "Azioni supportate",
   "targetOtherDevice": "Altro dispositivo",
   "targetThisDevice": "Questo dispositivo",
   "theFollowingPermissionsRequired": "Sono richieste le seguenti autorizzazioni:",
@@ -408,7 +413,7 @@
   "tryingToConnectAgain": "Sto provando a connettermi di nuovo...",
   "unassignAction": "Annulla assegnazione azione",
   "unlockFullVersion": "Sblocca la versione completa",
-  "unlockingNotPossible": "A causa di problemi tecnici, al momento non è possibile sbloccare il tutto, ma per il momento puoi usufruire di un utilizzo illimitato!",
+  "unlockingNotPossible": "Al momento non è ancora possibile sbloccarlo, quindi per il momento goditi un utilizzo illimitato!",
   "update": "Aggiorna",
   "useCustomKeymapForButton": "Utilizzare una mappa dei tasti personalizzata per supportare",
   "version": "Versione{version}",

@@ -134,11 +134,10 @@ class _TrainerPageState extends State<TrainerPage> with WidgetsBindingObserver {
       controller: _scrollController,
       child: SingleChildScrollView(
         controller: _scrollController,
-        padding: EdgeInsets.only(bottom: widget.isMobile ? 146 : 16, left: 16, right: 16, top: 16),
+        padding: EdgeInsets.only(bottom: widget.isMobile ? 166 : 16, left: 16, right: 16, top: 16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 12,
           children: [
             ValueListenableBuilder(
               valueListenable: IAPManager.instance.isPurchased,
@@ -154,33 +153,35 @@ class _TrainerPageState extends State<TrainerPage> with WidgetsBindingObserver {
                         child: Row(
                           spacing: 12,
                           children: [
-                            Select<SupportedApp>(
-                              itemBuilder: (c, app) => Row(
-                                spacing: 4,
-                                children: [
-                                  Text(screenshotMode ? 'Trainer app' : app.name),
-                                  if (app.supportsOpenBikeProtocol) Icon(Icons.star),
-                                ],
-                              ),
-                              popup: SelectPopup(
-                                items: SelectItemList(
-                                  children: SupportedApp.supportedApps.map((app) {
-                                    return SelectItemButton(
-                                      value: app,
-                                      child: Row(
-                                        spacing: 4,
-                                        children: [
-                                          Text(app.name),
-                                          if (app.supportsOpenBikeProtocol) Icon(Icons.star),
-                                        ],
-                                      ),
-                                    );
-                                  }).toList(),
+                            Flexible(
+                              child: Select<SupportedApp>(
+                                itemBuilder: (c, app) => Row(
+                                  spacing: 4,
+                                  children: [
+                                    Expanded(child: Text(screenshotMode ? 'Trainer app' : app.name)),
+                                    if (app.supportsOpenBikeProtocol.isNotEmpty) Icon(Icons.star),
+                                  ],
                                 ),
-                              ).call,
-                              placeholder: Text(context.i18n.selectTrainerAppPlaceholder),
-                              value: core.settings.getTrainerApp(),
-                              onChanged: (selectedApp) async {},
+                                popup: SelectPopup(
+                                  items: SelectItemList(
+                                    children: SupportedApp.supportedApps.map((app) {
+                                      return SelectItemButton(
+                                        value: app,
+                                        child: Row(
+                                          spacing: 4,
+                                          children: [
+                                            Text(app.name),
+                                            if (app.supportsOpenBikeProtocol.isNotEmpty) Icon(Icons.star),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ).call,
+                                placeholder: Text(context.i18n.selectTrainerAppPlaceholder),
+                                value: core.settings.getTrainerApp(),
+                                onChanged: (selectedApp) async {},
+                              ),
                             ),
                             if (core.settings.getLastTarget() != null) ...[
                               if (!widget.isMobile) Icon(core.settings.getLastTarget()!.icon),
@@ -201,18 +202,25 @@ class _TrainerPageState extends State<TrainerPage> with WidgetsBindingObserver {
               ),
             ),
             if (core.settings.getTrainerApp() != null) ...[
-              SizedBox(height: 8),
-              if (recommendedTiles.isNotEmpty) ColoredTitle(text: context.i18n.recommendedConnectionMethods),
+              Gap(22),
+              if (recommendedTiles.isNotEmpty) ...[
+                ColoredTitle(text: context.i18n.recommendedConnectionMethods),
+                Gap(12),
+              ],
 
               for (final grouped in recommendedTiles.chunked(widget.isMobile ? 1 : 2)) ...[
                 IntrinsicHeight(
-                  child: Row(
-                    spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: grouped.map((tile) => Expanded(child: tile)).toList(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: Row(
+                      spacing: 8,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: grouped.map((tile) => Expanded(child: tile)).toList(),
+                    ),
                   ),
                 ),
               ],
+              Gap(12),
               if (otherTiles.isNotEmpty) ...[
                 SizedBox(height: 8),
                 SizedBox(
@@ -224,11 +232,14 @@ class _TrainerPageState extends State<TrainerPage> with WidgetsBindingObserver {
                         content: Column(
                           children: [
                             for (final grouped in otherTiles.chunked(widget.isMobile ? 1 : 2)) ...[
-                              IntrinsicHeight(
-                                child: Row(
-                                  spacing: 8,
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: grouped.map((tile) => Expanded(child: tile)).toList(),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: IntrinsicHeight(
+                                  child: Row(
+                                    spacing: 8,
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: grouped.map((tile) => Expanded(child: tile)).toList(),
+                                  ),
                                 ),
                               ),
                             ],
@@ -239,10 +250,11 @@ class _TrainerPageState extends State<TrainerPage> with WidgetsBindingObserver {
                   ),
                 ),
               ],
+              Gap(12),
 
               SizedBox(height: 4),
               Flex(
-                direction: widget.isMobile ? Axis.vertical : Axis.horizontal,
+                direction: widget.isMobile || MediaQuery.sizeOf(context).width < 750 ? Axis.vertical : Axis.horizontal,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 8,

@@ -1,7 +1,7 @@
 {
   "accessibilityDescription": "BikeControl benötigt Zugriffsberechtigungen, um Ihre Trainings-Apps zu steuern.",
   "accessibilityDisclaimer": "BikeControl greift nur auf Ihren Bildschirm zu, um die von Ihnen konfigurierten Gesten auszuführen. Es werden keine weiteren Bedienungshilfen oder persönlichen Daten abgerufen.",
-  "accessibilityReasonControl": "• Um Ihnen die Steuerung von Apps wie MyWhoosh, IndieVelo und anderen über Ihre Zwift-Geräte zu ermöglichen",
+  "accessibilityReasonControl": "• Um Ihnen die Steuerung von Apps wie MyWhoosh, TrainingPeaks und anderen über Ihre Zwift-Geräte zu ermöglichen",
   "accessibilityReasonTouch": "• Um Berührungsgesten auf Ihrem Bildschirm zur Steuerung von Trainer-Apps zu simulieren.",
   "accessibilityReasonWindow": "• Um zu erkennen, welches Trainings-App-Fenster aktuell aktiv ist",
   "accessibilityServiceExplanation": "BikeControl benötigt die AccessibilityService API von Android, um ordnungsgemäß zu funktionieren.",
@@ -23,6 +23,7 @@
   "allowsRunningInBackground": "Ermöglicht es BikeControl, im Hintergrund weiterzulaufen.",
   "alreadyBoughtTheApp": "App bereits gekauft? Dann musst Du BikeControl nicht erneut kaufen. Aus technischen Gründen lässt sich leider nicht feststellen, ob die App früher bereits erworben wurde. \n\nGebe Deine Play Store-Kauf-ID (z.B. GPA.3356-1337-1338-1339) ein, um die Vollversion freizuschalten. Falls Du diese nicht finden kannst, kontaktiere mich bitte direkt.",
   "alreadyBoughtTheAppPreviously": "App zuvor bereits gekauft?",
+  "androidSystemAction": "Android-Systemaktion",
   "appIdActions": "{appId} Aktionen",
   "@appIdActions": {
     "placeholders": {
@@ -45,7 +46,7 @@
   "chooseBikeControlInConnectionScreen": "Wähle im Verbindungsbildschirm BikeControl aus.",
   "clickAButtonOnYourController": "Klicke eine Controller-Taste, um deren Aktion zu bearbeiten, oder tippe auf das Bearbeitungssymbol.",
   "clickV2EventInfo": "Dein Click V2 sendet möglicherweise keine Tastenereignisse mehr. Probier mal ein paar Tasten aus und schau, ob sie in BikeControl angezeigt werden.",
-  "clickV2Instructions": "Damit dein Zwift Click V2 optimal funktioniert, solltest du das Gerät vor jeder Trainings-Session in der Zwift-App verbinden.\nAnsonsten funktioniert der Click V2 nach einer Minute nicht mehr.\n\n1. Öffne die Zwift-App.\n2. Melde dich an (kein Abonnement nötig) und öffne den Bildschirm für die Geräteverbindung.\n3. Verbinde deinen Trainer und dann den Zwift Click V2.\n4. Schließe die Zwift-App wieder und verbinde dich erneut in BikeControl.",
+  "clickV2Instructions": "Damit dein Zwift Click V2 optimal funktioniert, solltest du das Gerät vor jeder Trainings-Session in der Zwift-App verbinden.\nAnsonsten funktioniert der Click V2 nach einer Minute nicht mehr.\n\n1. Öffne die Zwift-App (nicht Companion!).\n2. Melde dich an (kein Abonnement nötig) und öffne den Bildschirm für die Geräteverbindung.\n3. Verbinde deinen Trainer und dann den Zwift Click V2.\n4. Schließe die Zwift-App wieder und verbinde dich erneut in BikeControl.",
   "close": "Schließen",
   "commandsRemainingToday": "{commandsRemainingToday}/{dailyCommandLimit} verbleibende Befehle heute",
   "configuration": "Konfiguration",
@@ -66,7 +67,7 @@
     }
   },
   "connection": "Verbindung",
-  "continueAction": "Weitermachen",
+  "continueAction": "Weiter",
   "controlAppUsingModes": "Steuere {appName} über {modes}",
   "@controlAppUsingModes": {
     "placeholders": {
@@ -139,6 +140,7 @@
   "duplicate": "Duplikat",
   "enableAutoRotation": "Aktiviere die automatische Drehung auf Ihrem Gerät, um sicherzustellen, dass die App ordnungsgemäß funktioniert.",
   "enableBluetooth": "Bluetooth aktivieren",
+  "enableItInTheConnectionSettingsFirst": "Aktiviere es zuerst in den Verbindungseinstellungen.",
   "enableKeyboardAccessMessage": "Aktiviere im folgenden Bildschirm die Tastatursteuerung für BikeControl. Falls BikeControl nicht angezeigt wird, füge es bitte manuell hinzu.",
   "enableKeyboardMouseControl": "BikeControl sendet Maus- oder Tastaturkommandos an {appName}",
   "@enableKeyboardMouseControl": {
@@ -148,7 +150,9 @@
       }
     }
   },
+  "enableLocalConnectionMethodFirst": "Aktivieren Sie zuerst die Methode „Lokale Verbindung“.",
   "enableMediaKeyDetection": "Medientastenerkennung aktivieren",
+  "enableMywhooshLinkInTheConnectionSettingsFirst": "Aktiviere zuerst MyWhoosh Link in den Verbindungseinstellungen.",
   "enablePairingProcess": "Kopplungsprozess aktivieren",
   "enablePermissions": "Berechtigungen aktivieren",
   "enableSteeringWithPhone": "Sensoren Ihres Telefons aktivieren z.B. zum Lenken",
@@ -394,6 +398,7 @@
   "simulateTouch": "Berührung simulieren",
   "skip": "Überspringen",
   "stop": "Stoppen",
+  "supportedActions": "Unterstützte Aktionen",
   "targetOtherDevice": "Anderes Gerät",
   "targetThisDevice": "Dieses Gerät",
   "theFollowingPermissionsRequired": "Folgende Berechtigungen sind erforderlich:",
@@ -408,7 +413,7 @@
   "tryingToConnectAgain": "Verbinde erneut...",
   "unassignAction": "Zuweisung aufheben",
   "unlockFullVersion": "Vollversion freischalten",
-  "unlockingNotPossible": "Aufgrund technischer Probleme ist eine Entsperrung derzeit nicht möglich; daher kann die App solange uneingeschränkt verwendet werden.",
+  "unlockingNotPossible": "Eine Freischaltung ist derzeit noch nicht möglich, daher ist die App vorerst uneingeschränkt nutzbar!",
   "update": "Aktualisieren",
   "useCustomKeymapForButton": "Verwende eine benutzerdefinierte Tastaturbelegung, um die",
   "version": "Version {version}",
